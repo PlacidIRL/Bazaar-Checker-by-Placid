@@ -1,63 +1,28 @@
 # Bazaar Checker by Placid
 
-WotLK 3.3.5 addon for Project Ascension. Keeps a wishlist of items you're
-after, then instantly scans the Bazaar vendor's entire rotating stock (all
-~11 pages / ~106 slots) the moment you open its window, and alerts you if
-anything on your wishlist is available.
+A World of Warcraft (3.3.5) addon for Project Ascension that watches a wishlist of items and alerts you the moment any of them are in stock at the Bazaar vendor (Tiraxis, The Ethereal Bazaar), which sells items priced in Bazaar Tokens. It scans the vendor's full stock automatically when you open its window and surfaces matches with a chat message, sound, popup, and one-click Buy button.
 
 ## Install
+Folder name must stay `Bazaar Checker by Placid` inside your `Interface\AddOns` directory (this folder already matches, so you can copy it there as-is).
 
-Folder name must stay `Bazaar Checker by Placid` inside your
-`Interface\AddOns` directory (this folder already matches, so you can copy
-it there as-is).
+## Slash Commands
+- `/bazaar` or `/bzc` — toggle the standalone wishlist window
+- `/bazaar rescan` or `/bzc rescan` — manually re-scan the currently open vendor
+- `/bazaar <item link or item ID>` (or `/bzc ...`) — add that item to your wishlist directly
+- `/bazaar` or `/bzc` with no argument and not "rescan" — opens/closes the main wishlist window
 
-## Slash commands
+## Features
+- Wishlist of items (by item ID), addable via shift-click item link, typed item link, or numeric item ID
+- Automatic scan of the vendor's entire stock (all pages, not just the visible one) on `MERCHANT_SHOW`
+- Vendor recognition by NPC name ("Tiraxis") or by detecting Bazaar Token (item ID 975001) pricing on its stock, so ordinary vendors aren't scanned
+- Alert popup listing each matched item's icon, name/link (with tooltip and shift-click-style linking), price (Bazaar Token cost, copper price, or vendor page number as fallback), and a Buy button that repurchases the item's current merchant slot at click time
+- Chat message and configurable alert sound on match; chat message when the vendor is confirmed but nothing wishlisted is in stock
+- Skips items that are sold out for the current stock rotation
+- Standalone draggable wishlist window with a remembered screen position, plus an equivalent panel embedded under Esc -> Interface -> AddOns
+- Draggable minimap button (toggles the wishlist window, position remembered) that can be hidden via settings
+- Options: alert sound on/off, alert sound choice, minimap button visibility/position
+- Saved-variable persistence of wishlist and settings (`BazaarCheckerDB`)
+- Defensive `pcall` wrapping around scanning, alert popup rendering, and wishlist UI refresh, so a Lua error prints a visible chat message instead of failing silently
 
-- `/bazaar` or `/bzc` — toggle the wishlist window
-- `/bazaar <itemID or item link>` — add an item to your wishlist directly
-- `/bazaar rescan` — manually re-scan the currently open vendor (mainly
-  useful for troubleshooting)
-
-## Managing your wishlist
-
-There are three equivalent ways to reach the same wishlist (adding/removing
-in one instantly updates the others):
-
-1. **Esc -> Interface -> AddOns -> Bazaar Checker** — a panel embedded in
-   the standard Blizzard AddOns options list.
-2. The standalone popup window (`/bazaar`, `/bzc`, or the minimap button).
-3. `/bazaar <itemID or item link>` typed directly.
-
-In any of these: **shift-click** an item (from your bags, a tooltip, etc.)
-into the add box to insert its link, or just type a numeric item ID, then
-hit **Add** or Enter. Every wishlisted item is listed with its icon and
-colored name; click the small red icon on the right of a row to **remove**
-it.
-
-The popup window can also be dragged to move it; position is remembered
-between sessions.
-
-## How scanning works
-
-- Triggers automatically on `MERCHANT_SHOW` (the moment you open a vendor
-  window) — no need to click through pages, since `GetMerchantNumItems()` /
-  `GetMerchantItemLink()` already cover the vendor's full stock regardless
-  of which page is currently displayed. The scan is a single instant pass.
-- To avoid pestering you at every random vendor in the game, a vendor only
-  counts as "the Bazaar" if **either** its NPC name matches
-  `BazaarChecker.VENDOR_NAME` ("Tiraxis" by default, see `Core.lua`) **or**
-  at least one of its items is actually priced in Bazaar Tokens (item ID
-  `975001`). Either signal alone is enough - this way a vendor still gets
-  recognized even if the extended-cost API doesn't behave as expected.
-  Ordinary vendors are silently ignored.
-- **Found:** for each wishlisted item currently in stock, you get a chat
-  message, a sound, and a popup showing the item link, its icon, and a
-  **Buy** button that purchases it on the spot. If the item's Bazaar Token
-  price is readable through the standard cost API it's shown with the token
-  icon; otherwise (see note below) the vendor page number is shown instead,
-  so you can find it fast and check the exact price there.
-- **Not found:** if it's confirmed to be the Bazaar vendor but none of your
-  wishlisted items are currently available (stock rotates), you get a single
-  chat message saying so.
-- Items that are sold out for the current rotation (`numAvailable == 0`)
-  are treated as unavailable and won't trigger an alert.
+## Bug Fixes vs. the Original
+This is an original addon written for Project Ascension — not a modification of an existing addon.
