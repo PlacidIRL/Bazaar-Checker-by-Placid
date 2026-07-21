@@ -1,0 +1,14 @@
+## Interface: 30300
+## Title: Bazaar Checker |cff4b0082by Placid|r
+## Notes: Scans the Bazaar vendor for your wishlisted items, priced in Bazaar Tokens, and alerts you with a popup, chat message, sound, and a one-click buy button.
+## Author: Placid
+## Version: 1.0.0
+## SavedVariables: BazaarCheckerDB
+
+Core.lua
+Scanner.lua
+AlertPopup.lua
+WishlistUI.lua
+MainFrame.lua
+OptionsPanel.lua
+Minimap.lua
